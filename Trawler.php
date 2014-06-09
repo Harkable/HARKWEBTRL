@@ -23,10 +23,10 @@ class Trawler {
     global $wpdb;
 
     // Get the newest instagram in DB
-    $sql = "SELECT * FROM hc_community WHERE is_instagram='1' ORDER BY created DESC LIMIT 1";
+    $sql = "SELECT * FROM trawler WHERE is_instagram='1' ORDER BY created DESC LIMIT 1";
     $latest_instagram = $wpdb->get_row($sql);
 
-    $url = "https://api.instagram.com/v1/users/1294564672/media/recent/";
+    $url = "https://api.instagram.com/v1/users/" . $this->_instagram_user_id . "/media/recent/";
     $url .= "?client_id=" . $this->_instagram_client_id;
     $url .= ($latest_instagram) ? "&min_timestamp=" . ($latest_instagram->created + 1) : "";
 
@@ -56,7 +56,7 @@ class Trawler {
     global $wpdb;
 
     // Get the newest instagram in DB
-    $sql = "SELECT * FROM hc_community WHERE is_tweet='1' ORDER BY created DESC LIMIT 1";
+    $sql = "SELECT * FROM trawler WHERE is_tweet='1' ORDER BY created DESC LIMIT 1";
     $latest_tweet = $wpdb->get_row($sql);
 
     // Build the URL
@@ -91,14 +91,14 @@ class Trawler {
     global $wpdb;
 
     // First get cached posts from Twitter & Instagram
-    $tweets = $wpdb->get_results("SELECT * FROM hc_community WHERE is_tweet='1' ORDER BY created DESC LIMIT 20");
+    $tweets = $wpdb->get_results("SELECT * FROM trawler WHERE is_tweet='1' ORDER BY created DESC LIMIT 20");
     return $tweets;
   }
 
   public function get_instagrams()
   {
     global $wpdb;
-    $instagrams = $wpdb->get_results("SELECT * FROM hc_community WHERE is_instagram='1' ORDER BY created DESC LIMIT 30");
+    $instagrams = $wpdb->get_results("SELECT * FROM trawler WHERE is_instagram='1' ORDER BY created DESC LIMIT 30");
     return $instagrams;
   }
 
@@ -108,7 +108,7 @@ class Trawler {
     $tweets = $this->_fetch_tweets();
 
     // Insert tweets
-    $sql = "INSERT hc_community (is_tweet,is_instagram,tweet_id,tweet_text,tweet_link,instagram_src,instagram_link,created) VALUES";
+    $sql = "INSERT trawler (is_tweet,is_instagram,tweet_id,tweet_text,tweet_link,instagram_src,instagram_link,created) VALUES";
     $first = TRUE;
 
     foreach($tweets as $tweet)
